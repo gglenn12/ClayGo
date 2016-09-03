@@ -39,7 +39,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="description" />
+        android:text="participants" />
 
     <LinearLayout
         android:layout_width="match_parent"

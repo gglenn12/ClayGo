@@ -3,6 +3,10 @@ package com.himolabs.claygo;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+
+import java.sql.BatchUpdateException;
 import android.util.Log;
 
 import com.google.firebase.database.DataSnapshot;
@@ -20,7 +24,6 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    DataHelper dataHelper;
     private ArrayList<Restrooms> restrooms = new ArrayList<>();
     private ArrayList<TrashBins> trashBins = new ArrayList<>();
     private ArrayList<DirtyAreas> dirtyAreas = new ArrayList<>();
@@ -32,12 +35,17 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //GetData from Firebase
-        InitFirebase();
-        GetRestrooms(); // will store data to local variable restrooms
-        GetTrashBins(); // will store data to local variable trashbins
-        GetCommunityEvents(); // will store data to local variable communityEvents
-        GetDirtyAreas(); // will store data to local variable dirtyAreas
+        Button enterButton = (Button)findViewById(R.id.enterButton);
+
+        enterButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getApplication(), MapsActivity.class);
+                startActivity(i);
+                finish();
+            }
+        });
+
     }
 
     private void InitFirebase() {

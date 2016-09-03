@@ -20,6 +20,7 @@ public class CreateEventActivity extends AppCompatActivity {
     private EditText et_name, et_description, et_startdatetime, et_enddatetime, et_noofparticipants;
     private Button btn_save;
     private ImageView iv_image;
+    private double lat = 0, lng =0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +28,10 @@ public class CreateEventActivity extends AppCompatActivity {
         setContentView(R.layout.activity_create_event);
 
         InitFirebase();
+        if(getIntent().hasExtra("lat"))
+            lat = getIntent().getDoubleExtra("lat", 0);
+        if(getIntent().hasExtra("long"))
+            lng = getIntent().getDoubleExtra("long", 0);
 
         et_name = (EditText) findViewById(R.id.et_name);
         et_description = (EditText) findViewById(R.id.et_description);
@@ -57,8 +62,8 @@ public class CreateEventActivity extends AppCompatActivity {
         model.description = et_description.getText().toString();
         model.start_date = et_startdatetime.getText().toString();
         model.end_date = et_enddatetime.getText().toString();
-        model.latitude = 0;
-        model.longitude = 0;
+        model.latitude = lat;
+        model.longitude = lng;
         model.no_of_participants = et_noofparticipants.getText().toString();
 
         String key = mDatabase.child("community_events").push().getKey();
@@ -68,5 +73,6 @@ public class CreateEventActivity extends AppCompatActivity {
         childUpdates.put("/community_events/" + key, postValues);
 
         mDatabase.updateChildren(childUpdates);
+        finish();
     }
 }
