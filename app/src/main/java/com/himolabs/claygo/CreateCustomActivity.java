@@ -23,12 +23,18 @@ public class CreateCustomActivity extends AppCompatActivity {
     private EditText et_name, et_description;
     private ImageView iv_image;
     private Button btn_save;
+    private double lat = 0, lng =0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_custom);
         InitFirebase();
+
+        if(getIntent().hasExtra("lat"))
+            lat = getIntent().getDoubleExtra("lat", 0);
+        if(getIntent().hasExtra("long"))
+            lng = getIntent().getDoubleExtra("long", 0);
 
         et_name = (EditText) findViewById(R.id.et_name);
         et_description = (EditText) findViewById(R.id.et_description);
@@ -39,6 +45,7 @@ public class CreateCustomActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 SaveToFirebase();
+                finish();
             }
         });
     }
@@ -48,13 +55,16 @@ public class CreateCustomActivity extends AppCompatActivity {
         mDatabase = FirebaseDatabase.getInstance().getReference();
     }
 
+
+
+
     private void SaveToFirebase() {
 
         DirtyAreas model = new DirtyAreas();
         model.dirty_area_name = et_name.getText().toString();
         model.description = et_description.getText().toString();
-        model.latitude = 0;
-        model.longitude = 0;
+        model.latitude = lat;
+        model.longitude = lng;
 
         String key = mDatabase.child("dirty_areas").push().getKey();
         Map<String, Object> postValues = model.toMap();

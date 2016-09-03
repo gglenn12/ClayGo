@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.games.event.Event;
 import com.google.android.gms.maps.GoogleMap;
@@ -47,11 +48,15 @@ public class PointsDialog {
         Button create = (Button) dialog.findViewById(R.id.btn_create_event);
         Button close = (Button) dialog.findViewById(R.id.btn_close);
         final Context eee = e;
+        final DirtyAreas aa = a;
 
         create.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(eee, CreateEventActivity.class);
+                i.putExtra("lat", aa.latitude);
+                i.putExtra("long", aa.longitude);
+                i.putExtra("messid", aa.DirtyAreaId);
                 eee.startActivity(i);
                 dialog.dismiss();
             }
@@ -117,8 +122,11 @@ public class PointsDialog {
                 //eee.startActivity(i);
                 //dialog.dismiss()
                 // ;
+
+                Toast.makeText(eee, "You gained 10 pts for joining!", Toast.LENGTH_SHORT).show();
                 points.points = points.points + 10;
                 SaveToFirebase();
+                dialog.dismiss();
             }
         });
 
@@ -148,7 +156,7 @@ public class PointsDialog {
         Map<String, Object> postValues = model.toMap();
 
         Map<String, Object> childUpdates = new HashMap<>();
-        childUpdates.put("/user/" + key, postValues);
+        childUpdates.put("/users/" + key, postValues);
 
         mDatabase.updateChildren(childUpdates);
     }

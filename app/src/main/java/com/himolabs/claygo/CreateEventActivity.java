@@ -21,6 +21,7 @@ public class CreateEventActivity extends AppCompatActivity {
     private Button btn_save;
     private ImageView iv_image;
     private double lat = 0, lng =0;
+    private String id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +33,12 @@ public class CreateEventActivity extends AppCompatActivity {
             lat = getIntent().getDoubleExtra("lat", 0);
         if(getIntent().hasExtra("long"))
             lng = getIntent().getDoubleExtra("long", 0);
+
+
+        if(getIntent().hasExtra("messid"))
+            id = getIntent().getStringExtra("messid");
+        else
+            id = "";
 
         et_name = (EditText) findViewById(R.id.et_name);
         et_description = (EditText) findViewById(R.id.et_description);
@@ -45,6 +52,8 @@ public class CreateEventActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 SaveToFirebase();
+                if(!id.isEmpty())
+                    deletemess();
             }
         });
     }
@@ -74,5 +83,10 @@ public class CreateEventActivity extends AppCompatActivity {
 
         mDatabase.updateChildren(childUpdates);
         finish();
+    }
+
+    private void deletemess()
+    {
+        mDatabase.child("dirty_areas").child(id).removeValue();
     }
 }

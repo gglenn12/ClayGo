@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:background="#9b59b6">
+
+
 
     <ScrollView
         android:layout_width="match_parent"
@@ -12,43 +16,79 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:gravity="center"
+                android:orientation="vertical">
+
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="#FFF"
+                    android:textSize="20dp"
+                    android:gravity="center"
+                    android:text="Create Event"/>
+
+            </LinearLayout>
+
             <EditText
                 android:id="@+id/et_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColorHint="#FFF"
+                android:textColorLink="#FFF"
+                android:textColor="#FFF"
                 android:hint="Name"/>
 
             <EditText
                 android:id="@+id/et_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColorHint="#FFF"
+                android:textColorLink="#FFF"
+                android:textColor="#FFF"
                 android:hint="Description"/>
 
             <EditText
                 android:id="@+id/et_startDateTime"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColorHint="#FFF"
+                android:textColorLink="#FFF"
+                android:textColor="#FFF"
                 android:hint="Start Date-Time"/>
 
             <EditText
                 android:id="@+id/et_endDateTime"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColorHint="#FFF"
+                android:textColorLink="#FFF"
+                android:textColor="#FFF"
                 android:hint="End Date-Time"/>
 
             <EditText
                 android:id="@+id/et_noOfParticipants"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColorHint="#FFF"
+                android:textColorLink="#FFF"
+                android:textColor="#FFF"
                 android:hint="Number of Participants"/>
 
             <ImageView
                 android:id="@+id/iv_image"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
-                android:scaleType="centerInside" />
+                android:scaleType="centerInside"
+                android:background="#2FFF"
+                android:src="@android:drawable/ic_menu_camera"/>
 
         </LinearLayout>
+
+
 
     </ScrollView>
 
@@ -57,5 +97,7 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_gravity="bottom"
+        android:background="@drawable/login_btn"
+        android:textColor="#FFF"
         android:text="Save"/>
 </FrameLayout>

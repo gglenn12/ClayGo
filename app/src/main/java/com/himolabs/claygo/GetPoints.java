@@ -1,5 +1,9 @@
 package com.himolabs.claygo;
 
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,6 +19,8 @@ public class GetPoints extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_get_points);
+
+
 
         SurfaceView surfaceView = (SurfaceView) findViewById(R.id.camera_view);
 
@@ -33,9 +39,11 @@ public class GetPoints extends AppCompatActivity {
     }
 
     private void show() {
-
+        setResult(RESULT_OK);
         finish();
         qrEader.stop();
         qrEader.releaseAndCleanup();
     }
+
+
 }

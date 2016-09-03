@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -31,6 +32,7 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.vision.text.Text;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -44,6 +46,8 @@ import com.himolabs.claygo.Models.TrashBins;
 import com.himolabs.claygo.Models.UsersPoints;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MapsActivity extends FragmentActivity implements   OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
@@ -63,8 +67,10 @@ public class MapsActivity extends FragmentActivity implements   OnMapReadyCallba
     LatLng latLng;
     private static final int MY_PERMISSION_ACCESS_COARSE_LOCATION = 11;
     private static final int MY_PERMISSION_ACCESS_FINE_LOCATION = 12;
+    private static final int MY_PERMISSION_ACCESS_CAMERA = 22;
     private boolean didZoomtoSelf = false;
     private int points = 0;
+    private TextView pointsTV;
     private static enum markertype
     {
         bin,
@@ -80,6 +86,8 @@ public class MapsActivity extends FragmentActivity implements   OnMapReadyCallba
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        pointsTV = (TextView)findViewById(R.id.pointsTV);
         createEventFB = (FloatingActionButton)findViewById(R.id.create_btn);
 
         createEventFB.setOnClickListener(new View.OnClickListener() {
@@ -98,6 +106,7 @@ public class MapsActivity extends FragmentActivity implements   OnMapReadyCallba
         GetTrashBins(); // will store data to local variable trashbins
         GetCommunityEvents(); // will store data to local variable communityEvents
         GetDirtyAreas(); // will store data to local variable dirtyAreas
+        GetPoints();
     }
 
     @Override
@@ -152,9 +161,16 @@ public class MapsActivity extends FragmentActivity implements   OnMapReadyCallba
         mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(LatLng latLng) {
-
+                AddEvent(latLng);
             }
         });
+    }
+
+    private void AddEvent(LatLng ltlng){
+        Intent i = new Intent(getApplication(), CreateCustomActivity.class);
+        i.putExtra("lat", ltlng.latitude);
+        i.putExtra("long", ltlng.longitude);
+        startActivity(i);
     }
     private void pakganern(int tint, markertype r){
         if(r == markertype.mess){
@@ -162,6 +178,13 @@ public class MapsActivity extends FragmentActivity implements   OnMapReadyCallba
             DirtyAreas b = dirtyAreas.get(tint);
             a.showMessDialog(this, this, b, userpoints.get(0));
         }else if (r == markertype.bin) {
+            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA)
+                    != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{android.Manifest.permission.CAMERA}, MY_PERMISSION_ACCESS_CAMERA);
+            } else {
+                startActivityForResult(new Intent(getApplicationContext(), GetPoints.class), 1);
+            }
 
         }else if(r == markertype.event){
             PointsDialog a = new PointsDialog();
@@ -170,7 +193,7 @@ public class MapsActivity extends FragmentActivity implements   OnMapReadyCallba
         }
     }
     protected synchronized void buildGoogleApiClient() {
-        Toast.makeText(this,"buildGoogleApiClient",Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this,"buildGoogleApiClient",Toast.LENGTH_SHORT).show();
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
@@ -192,7 +215,7 @@ public class MapsActivity extends FragmentActivity implements   OnMapReadyCallba
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
         currLocationMarker = mMap.addMarker(markerOptions);
 
-        Toast.makeText(this,"Location Changed",Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this,"Location Changed",Toast.LENGTH_SHORT).show();
 
         //zoom to current position:
         if(!didZoomtoSelf) {
@@ -207,7 +230,7 @@ public class MapsActivity extends FragmentActivity implements   OnMapReadyCallba
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        Toast.makeText(this,"onConnected", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this,"onConnected", Toast.LENGTH_SHORT).show();
         int a = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION);
         int b = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
 
@@ -237,14 +260,14 @@ public class MapsActivity extends FragmentActivity implements   OnMapReadyCallba
     @Override
     public void onConnectionSuspended(int i) {
 
-        Toast.makeText(this,"onConnectionSuspended",Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this,"onConnectionSuspended",Toast.LENGTH_SHORT).show();
 
     }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
-        Toast.makeText(this,"onConnectionFailed",Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this,"onConnectionFailed",Toast.LENGTH_SHORT).show();
     }
 
     private void insertMarker(LatLng coor, markertype m, int id )
@@ -286,6 +309,7 @@ public class MapsActivity extends FragmentActivity implements   OnMapReadyCallba
 
     private void InitFirebase() {
         mDatabase = FirebaseDatabase.getInstance().getReference();
+        mDatabase.keepSynced(true);
     }
 
     public void GetRestrooms() {
@@ -353,7 +377,7 @@ public class MapsActivity extends FragmentActivity implements   OnMapReadyCallba
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // Get Post object and use the values to update the UI
-
+                communityEvents.clear();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     CommunityEvents model = new CommunityEvents();
                     model.CommunityEventId = snapshot.getKey();
@@ -385,7 +409,7 @@ public class MapsActivity extends FragmentActivity implements   OnMapReadyCallba
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // Get Post object and use the values to update the UI
-
+                dirtyAreas.clear();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     DirtyAreas model = new DirtyAreas();
                     model.DirtyAreaId = snapshot.getKey();
@@ -411,6 +435,7 @@ public class MapsActivity extends FragmentActivity implements   OnMapReadyCallba
         ValueEventListener postListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                userpoints.clear();
                 for(DataSnapshot snapshot: dataSnapshot.getChildren()) {
                     UsersPoints model = new UsersPoints();
                     model.UsersPointsId = snapshot.getKey();
@@ -420,6 +445,8 @@ public class MapsActivity extends FragmentActivity implements   OnMapReadyCallba
                     userpoints.add(model);
 
                 }
+                pointsTV.setText(userpoints.get(0).points+ " pts");
+
             }
 
             @Override
@@ -428,5 +455,46 @@ public class MapsActivity extends FragmentActivity implements   OnMapReadyCallba
             }
         };
         mDatabase.child(Constants.users).addValueEventListener(postListener);
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == 1){
+            if(resultCode == RESULT_OK){
+                Toast.makeText(this, "You gained 10 pts!", Toast.LENGTH_SHORT).show();
+            SaveToFirebase();
+            GetPoints();}
+        }
+    }
+
+    private void SaveToFirebase() {
+
+        UsersPoints model = new UsersPoints();
+        model.first_name = userpoints.get(0).first_name;
+        model.last_name = userpoints.get(0).last_name;
+        model.points = userpoints.get(0).points+10  ;
+
+        String key = "1";
+        Map<String, Object> postValues = model.toMap();
+
+        Map<String, Object> childUpdates = new HashMap<>();
+        childUpdates.put("/users/" + key, postValues);
+
+        mDatabase.updateChildren(childUpdates);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,  String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSION_ACCESS_CAMERA:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    startActivityForResult(new Intent(getApplicationContext(), GetPoints.class), 1);
+
+                } else {
+                    Toast.makeText(this, "Please grant camera permission to use the QR Scanner", Toast.LENGTH_SHORT).show();
+                }
+                return;
+        }
     }
 }

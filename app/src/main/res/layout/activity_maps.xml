@@ -9,10 +9,12 @@
         android:layout_height="100dp"
         android:layout_alignParentTop="true"
         android:orientation="horizontal"
+        android:visibility="visible"
         android:background="#9b59b6">
 
 
         <TextView
+            android:id="@+id/pointsTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="32sp"
@@ -40,6 +42,7 @@
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_margin="10dp"
+        android:src="@mipmap/marker_event"
         android:layout_gravity="bottom|right"/>
 </FrameLayout>
 
