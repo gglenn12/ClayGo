@@ -1,0 +1,73 @@
+{
+  "project_info": {
+    "project_number": "819812791220",
+    "firebase_url": "https://clay-go.firebaseio.com",
+    "project_id": "clay-go",
+    "storage_bucket": "clay-go.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:819812791220:android:b1a4c6083d3b78c4",
+        "android_client_info": {
+          "package_name": "com.himolabs.claygo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "819812791220-73ni90iii61bh6t5b9vl05od4l078dji.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCZ40LIOfDapGeYKGqG43orncUVUoBEjPg"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:819812791220:android:67a99af8afaeeba0",
+        "android_client_info": {
+          "package_name": "com.himolabs.eventapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "819812791220-73ni90iii61bh6t5b9vl05od4l078dji.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCZ40LIOfDapGeYKGqG43orncUVUoBEjPg"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
