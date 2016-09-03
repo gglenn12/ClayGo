@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "23.0.1"
+    buildToolsVersion "23.0.2"
 
     defaultConfig {
         applicationId "com.himolabs.claygo"
@@ -27,8 +27,8 @@ dependencies {
     compile 'com.google.firebase:firebase-core:9.4.0'
     compile 'com.google.firebase:firebase-database:9.4.0'
     compile 'com.google.firebase:firebase-storage:9.4.0'
-    compile 'com.android.support:appcompat-v7:23.+'
     compile 'com.google.android.gms:play-services:9.4.0'
+    compile 'com.github.nisrulz:qreader:1.0.6'
 }
 
 

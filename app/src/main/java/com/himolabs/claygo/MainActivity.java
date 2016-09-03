@@ -36,6 +36,15 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         Button enterButton = (Button)findViewById(R.id.enterButton);
+        Button trys = (Button) findViewById(R.id.btntry);
+
+        trys.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivityForResult(new Intent(getApplicationContext(), GetPoints.class), 1);
+            }
+        });
+
 
         enterButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -47,6 +56,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
+
+
 
     private void InitFirebase() {
         mDatabase = FirebaseDatabase.getInstance().getReference();
