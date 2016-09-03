@@ -20,4 +20,8 @@ public class Constants {
     public static final String trashbins = "trash_bins";
     public static final String communityevents = "community_events";
     public static final String dirtyareas = "dirty_areas";
+    public static final String users = "users";
+    public static final String lastname = "last_name";
+    public static final String firstname = "first_name";
+    public static final String points = "points";
 }

@@ -12,17 +12,28 @@ import android.widget.TextView;
 import com.google.android.gms.games.event.Event;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.vision.text.Text;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.himolabs.claygo.Models.CommunityEvents;
 import com.himolabs.claygo.Models.DirtyAreas;
+import com.himolabs.claygo.Models.UsersPoints;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by WGI on 03/09/2016.
  */
 public class PointsDialog {
 
-    private int points = 0;
-    public void showMessDialog(Context e, Object c, DirtyAreas a){
+    public PointsDialog()
+    {
+        InitFirebase();
+    }
+    private UsersPoints points;
+    public void showMessDialog(Context e, Object c, DirtyAreas a, UsersPoints _points){
        // MapsActivity cc = (MapsActivity)c;
+        points = _points;
         final Dialog dialog = new Dialog(e);
 
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -77,13 +88,14 @@ public class PointsDialog {
 
     }
 
-    public void showEventDialog(Context e, Object c, CommunityEvents a){
+    public void showEventDialog(Context e, Object c, CommunityEvents a, UsersPoints _points){
         // MapsActivity cc = (MapsActivity)c;
+        points = _points;
         final Dialog dialog = new Dialog(e);
 
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setCancelable(false);
-        dialog.setContentView(R.layout.dirty_area_dialog);
+        dialog.setContentView(R.layout.event_area_dialog);
 
         TextView name = (TextView) dialog.findViewById(R.id.tv_name);
         name.setText(a.event_name);
@@ -93,16 +105,20 @@ public class PointsDialog {
         sched.setText(a.start_date+ a.end_date);
         TextView participants = (TextView) dialog.findViewById(R.id.tv_participants);
         participants.setText(a.no_of_participants);
-        Button create = (Button) dialog.findViewById(R.id.btn_create_event);
+
+        Button join = (Button) dialog.findViewById(R.id.btn_join_event);
         Button close = (Button) dialog.findViewById(R.id.btn_close);
         final Context eee = e;
 
-        create.setOnClickListener(new View.OnClickListener() {
+        join.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(eee, CreateEventActivity.class);
-                eee.startActivity(i);
-                dialog.dismiss();
+                //Intent i = new Intent(eee, CreateEventActivity.class);
+                //eee.startActivity(i);
+                //dialog.dismiss()
+                // ;
+                points.points = points.points + 10;
+                SaveToFirebase();
             }
         });
 
@@ -116,6 +132,25 @@ public class PointsDialog {
         dialog.show();
 
     }
+    private DatabaseReference mDatabase;
+    private void InitFirebase() {
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+    }
 
+    private void SaveToFirebase() {
+
+        UsersPoints model = new UsersPoints();
+        model.first_name = points.first_name;
+        model.last_name = points.last_name;
+        model.points = points.points;
+
+        String key = "1";
+        Map<String, Object> postValues = model.toMap();
+
+        Map<String, Object> childUpdates = new HashMap<>();
+        childUpdates.put("/user/" + key, postValues);
+
+        mDatabase.updateChildren(childUpdates);
+    }
 
 }

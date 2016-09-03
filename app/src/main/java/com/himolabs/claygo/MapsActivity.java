@@ -41,6 +41,7 @@ import com.himolabs.claygo.Models.Constants;
 import com.himolabs.claygo.Models.DirtyAreas;
 import com.himolabs.claygo.Models.Restrooms;
 import com.himolabs.claygo.Models.TrashBins;
+import com.himolabs.claygo.Models.UsersPoints;
 
 import java.util.ArrayList;
 
@@ -50,6 +51,7 @@ public class MapsActivity extends FragmentActivity implements   OnMapReadyCallba
     private ArrayList<TrashBins> trashBins = new ArrayList<>();
     private ArrayList<DirtyAreas> dirtyAreas = new ArrayList<>();
     private ArrayList<CommunityEvents> communityEvents = new ArrayList<>();
+    private ArrayList<UsersPoints> userpoints = new ArrayList<>();
     private DatabaseReference mDatabase;
 
     private FloatingActionButton createEventFB;
@@ -130,18 +132,18 @@ public class MapsActivity extends FragmentActivity implements   OnMapReadyCallba
                 String t = marker.getTitle();
                 //Intent i = new Intent(getApplication(), GetPoints.class);
 
-                if(t.contains("bin")) {
-                  //  i.putExtra("type", "bin");
+                if(t.contains("bin")){
+                    String tt  =t.replace("bin", "");
+                    int tint = Integer.parseInt(tt);
+                    pakganern(tint, markertype.bin);
                 }else if(t.contains("mess")) {
                     String tt  =t.replace("mess", "");
                     int tint = Integer.parseInt(tt);
-                    eee(tint);
-//                    PointsDialog a = new PointsDialog();
-//                    DirtyAreas b = dirtyAreas.get(tint);
-//                    a.showMessDialog(getApplication(), this, b);
-                    //i.putExtra("type", "bin");
+                    pakganern(tint, markertype.mess);
                 }else if(t.contains("event")) {
-                    //i.putExtra("type", "bin");
+                    String tt  =t.replace("event", "");
+                    int tint = Integer.parseInt(tt);
+                    pakganern(tint, markertype.event);
                 }
                 //startActivity(i);
                 return false;
@@ -154,11 +156,18 @@ public class MapsActivity extends FragmentActivity implements   OnMapReadyCallba
             }
         });
     }
-    private void eee(int tint){
+    private void pakganern(int tint, markertype r){
+        if(r == markertype.mess){
+            PointsDialog a = new PointsDialog();
+            DirtyAreas b = dirtyAreas.get(tint);
+            a.showMessDialog(this, this, b, userpoints.get(0));
+        }else if (r == markertype.bin) {
 
-        PointsDialog a = new PointsDialog();
-        DirtyAreas b = dirtyAreas.get(tint);
-        a.showMessDialog(this, this, b);
+        }else if(r == markertype.event){
+            PointsDialog a = new PointsDialog();
+            CommunityEvents b = communityEvents.get(tint);
+            a.showEventDialog(this, this, b, userpoints.get(0));
+        }
     }
     protected synchronized void buildGoogleApiClient() {
         Toast.makeText(this,"buildGoogleApiClient",Toast.LENGTH_SHORT).show();
@@ -388,7 +397,6 @@ public class MapsActivity extends FragmentActivity implements   OnMapReadyCallba
                 }
                 populateStops();
             }
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 // Getting Post failed, log a message
@@ -397,6 +405,28 @@ public class MapsActivity extends FragmentActivity implements   OnMapReadyCallba
             }
         };
         mDatabase.child(Constants.dirtyareas).addValueEventListener(postListener);
+    }
 
+    public void GetPoints(){
+        ValueEventListener postListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot snapshot: dataSnapshot.getChildren()) {
+                    UsersPoints model = new UsersPoints();
+                    model.UsersPointsId = snapshot.getKey();
+                    model.last_name = snapshot.child(Constants.lastname).getValue(String.class);
+                    model.first_name = snapshot.child(Constants.firstname).getValue(String.class);
+                    model.points = snapshot.child(Constants.points).getValue(int.class);
+                    userpoints.add(model);
+
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.w("TAG", "loadPost:onCancelled", databaseError.toException());
+            }
+        };
+        mDatabase.child(Constants.users).addValueEventListener(postListener);
     }
 }

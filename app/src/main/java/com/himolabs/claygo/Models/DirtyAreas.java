@@ -11,6 +11,7 @@ import java.util.Map;
  */
 @IgnoreExtraProperties
 public class DirtyAreas {
+
     public String DirtyAreaId;
     public String description;
     public double longitude;
